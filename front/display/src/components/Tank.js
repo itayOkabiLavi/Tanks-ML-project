@@ -1,33 +1,55 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
-import bodypic from "../images/Body.png";
-import './Tank.css';
-function Tank(props) {
-    const maxBody = 50, maxTor = 50;
-    const height = props.size * maxBody;
-    const width = height / 1.3;
-    const [angle, setAngle] = useState(props.rot)
+import tankpic from "../images/Body.png";
+import turretpic from "../images/Turret.png";
 
-    const bodyStyle = {
-        height: height,
-        
+function Tank(props) {
+    const MAX_BODY = 50, MAX_TUR = 50;
+
+    const tankHeight = props.size * MAX_BODY;
+    const tankWidth = tankHeight / 1.4;
+
+    const turHeight = props.tursize * MAX_TUR;
+    const turWidth = turHeight / 1.6;
+
+    const size = turHeight * 1.5;
+
+    const [tankAngle, setTankAngle] = useState(props.rot);
+    const [turAngle, setTurAngle] = useState(props.rot);
+
+    function rot(deg) {
+        return 'rotate(' + deg + 'deg)';
     }
+    
     const tankStyle = {
-        marginLeft: props.xpos - width/2,
-        marginBottom: props.ypos - height/2,
-        transform: 'rotate('+ angle + 'deg)',
-        backgroundImage: 'url(' + bodypic + ')',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+
+        backgroundImage: 'url(' + tankpic + ')',
         backgroundSize: 'cover',
-        height: height,
-        width: width
+        filter: 'hue-' + rot(props.color_rot),
+        marginLeft: props.xpos - tankWidth/2,
+        marginBottom: props.ypos - tankHeight/2,
+        transform: rot(tankAngle),
+
+        height: tankHeight,
+        width: tankWidth
     };
-    function Turrent() {
-        return <div>
-            <img src='../../public/Turret.png' />
-        </div>
+    const turretStyle = {
+        backgroundImage: 'url(' + turretpic + ')',
+        backgroundSize: 'cover',
+        height: turHeight,
+
+        transform: rot(props.tur_rot),
+        transformOrigin: '50% 75%',
+        position: 'absolute',
+        bottom: '15%',
+
     }
+    // <img src={tankpic} style={bodyStyle}/>
     return <div className='tank' style={tankStyle}>
-        <Turrent/>
+        <img src={turretpic}  style={turretStyle}/>
     </div>;
 }
 
