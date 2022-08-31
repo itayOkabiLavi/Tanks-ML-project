@@ -14,9 +14,6 @@ function Tank(props) {
 
     const size = turHeight * 1.5;
 
-    const [tankAngle, setTankAngle] = useState(props.rot);
-    const [turAngle, setTurAngle] = useState(props.rot);
-
     function rot(deg) {
         return 'rotate(' + deg + 'deg)';
     }
@@ -29,9 +26,9 @@ function Tank(props) {
         backgroundImage: 'url(' + tankpic + ')',
         backgroundSize: 'cover',
         filter: 'hue-' + rot(props.color_rot),
-        marginLeft: props.xpos - tankWidth/2,
-        marginBottom: props.ypos - tankHeight/2,
-        transform: rot(tankAngle),
+        marginLeft: props.xpos - tankWidth / 2.0,
+        marginBottom: props.ypos - tankHeight / 2.0,
+        transform: rot(props.rot),
 
         height: tankHeight,
         width: tankWidth
