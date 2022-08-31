@@ -1,0 +1,19 @@
+#grid{
+    height: 100%;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#map{
+    width: 1110px;
+    height: 600px;
+    background-image: url('../../public/training\ grid.png');
+    background-color: aqua;
+    background-size: cover;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-end;
+}
