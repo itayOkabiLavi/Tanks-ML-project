@@ -11,6 +11,11 @@
   color: aliceblue;
 }
 
+.menu-btn{
+  width: 150px;
+  margin: 5px 0 5px 0;
+}
+
 #main {
   width: 100%;
   flex-grow: 1;

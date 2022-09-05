@@ -3,22 +3,12 @@ import ReactDOM from 'react-dom';
 import tankpic from "../images/Body.png";
 import turretpic from "../images/Turret.png";
 
-function Tank(props) {
-    const MAX_BODY = 50, MAX_TUR = 50;
+function rot(deg) {
+    return 'rotate(' + deg + 'deg)';
+}
 
-    const tankHeight = props.size * MAX_BODY;
-    const tankWidth = tankHeight / 1.4;
-
-    const turHeight = props.tursize * MAX_TUR;
-    const turWidth = turHeight / 1.6;
-
-    const size = turHeight * 1.5;
-
-    function rot(deg) {
-        return 'rotate(' + deg + 'deg)';
-    }
-    
-    const tankStyle = {
+function getTankStyle(props, tankHeight, tankWidth) {
+    return {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -33,7 +23,10 @@ function Tank(props) {
         height: tankHeight,
         width: tankWidth
     };
-    const turretStyle = {
+}
+
+function getTurStyle(props, turHeight) {
+    return {
         backgroundImage: 'url(' + turretpic + ')',
         backgroundSize: 'cover',
         height: turHeight,
@@ -44,7 +37,35 @@ function Tank(props) {
         bottom: '15%',
 
     }
-    // <img src={tankpic} style={bodyStyle}/>
+}
+/**
+ * props = {
+ *  id      - tank id.
+ *  xpos    - x position.
+ *  ypos    - x position.
+ *  size    - tank size [0,1].
+ *  rot     - rotation (positive is to the right).
+ *  color_rot - rotation of the color (change color).
+ *  tursize - turrent size.
+ *  tur_rot - turrent rotation acoording to tank.
+ * }
+ * @param {*} props 
+ * @returns 
+ */
+function Tank(props) {
+    const MAX_BODY = 50, MAX_TUR = 50;
+
+    const tankHeight = props.size * MAX_BODY;
+    const tankWidth = tankHeight / 1.4;
+
+    const turHeight = props.tursize * MAX_TUR;
+    const turWidth = turHeight / 1.6;
+
+    const size = turHeight * 1.5;
+
+    const tankStyle = getTankStyle(props, tankHeight, tankWidth);
+    const turretStyle = getTurStyle(props, turHeight);
+
     return <div className='tank' style={tankStyle}>
         <img src={turretpic}  style={turretStyle}/>
     </div>;
