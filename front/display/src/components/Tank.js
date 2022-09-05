@@ -7,7 +7,7 @@ function rot(deg) {
     return 'rotate(' + deg + 'deg)';
 }
 
-function getTankStyle(props, tankHeight, tankWidth) {
+function getTankStyle(details, tankHeight, tankWidth) {
     return {
         display: 'flex',
         justifyContent: 'center',
@@ -15,23 +15,23 @@ function getTankStyle(props, tankHeight, tankWidth) {
 
         backgroundImage: 'url(' + tankpic + ')',
         backgroundSize: 'cover',
-        filter: 'hue-' + rot(props.color_rot),
-        marginLeft: props.xpos - tankWidth / 2.0,
-        marginBottom: props.ypos - tankHeight / 2.0,
-        transform: rot(props.rot),
+        filter: 'hue-' + rot(details.color_rot),
+        marginLeft: details.xpos - tankWidth / 2.0,
+        marginBottom: details.ypos - tankHeight / 2.0,
+        transform: rot(details.rot),
 
         height: tankHeight,
         width: tankWidth
     };
 }
 
-function getTurStyle(props, turHeight) {
+function getTurStyle(details, turHeight) {
     return {
         backgroundImage: 'url(' + turretpic + ')',
         backgroundSize: 'cover',
-        height: turHeight,
+        height: turHeight + '',
 
-        transform: rot(props.tur_rot),
+        transform: rot(details.tur_rot),
         transformOrigin: '50% 75%',
         position: 'absolute',
         bottom: '15%',
@@ -53,12 +53,13 @@ function getTurStyle(props, turHeight) {
  * @returns 
  */
 function Tank(props) {
+    const details = props.details;
     const MAX_BODY = 50, MAX_TUR = 50;
 
-    const tankHeight = props.size * MAX_BODY;
+    const tankHeight = details.size * MAX_BODY;
     const tankWidth = tankHeight / 1.4;
 
-    const turHeight = props.tursize * MAX_TUR;
+    const turHeight = details.tursize * MAX_TUR;
     const turWidth = turHeight / 1.6;
 
     const size = turHeight * 1.5;

@@ -1,27 +1,20 @@
-const port = 3000;
+
+// SETUP
+const port = 3030;
 const express = require('express');
 const srvapp = express();
+
+const cors = require("cors");
+srvapp.use(cors());
+
+const {spawn} = require('child_process');
+
+const api = require('./api')
+const python_managing = require('./python_managing');
+
+const database_path = "/algorithms/output"
 // TODO: static public. return web displayer
 
-srvapp.listen(port, () => console.log('listening on ' + port));
-
-srvapp.get('/homepage', (req, res) => {
-    var today = new Date();
-    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-    console.log("request for homepage on: " + time)
-    res.status(200).send("Homepage");
-});
-
-srvapp.get('/training', (req, res) => {
-    var today = new Date();
-    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-    console.log("request for training on: " + time)
-    res.status(200).send("Training");
-});
-
-srvapp.get('/battle', (req, res) => {
-    var today = new Date();
-    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-    console.log("request for battle on: " + time)
-    res.status(200).send("Battle");
-});
+// START
+api(srvapp, port, database_path);
+python_managing.activate(spawn, './algorithms/train_tanks.py');
