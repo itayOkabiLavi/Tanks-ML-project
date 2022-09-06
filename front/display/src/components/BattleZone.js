@@ -34,10 +34,14 @@ function BattleZone() {
         let i = 1;
         const _tanks = [];
         while (info_split[i].trim() !== 'g') {
-            
+            let tank_det = info_split[i].trim();
+            tank_det = JSON.parse(tank_det);
+            _tanks.push(
+                <Tank details={tank_det} key={i}/>
+            );
             i += 1;
-            if (i > 5) break;
         }
+        setTanks(_tanks);
 
         setGameStatus("Game ID: " + info_split[0]);
     }
@@ -50,6 +54,7 @@ function BattleZone() {
         <div id='zonedisplay'>
             <div id='map-header'></div>
             <div id='map'>
+                {tanks}
             </div>
             <div id='map-footer'></div>
         </div>

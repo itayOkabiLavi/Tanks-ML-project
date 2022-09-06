@@ -12,7 +12,7 @@ function getTankStyle(details, tankHeight, tankWidth) {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-
+        position: 'absolute',
         backgroundImage: 'url(' + tankpic + ')',
         backgroundSize: 'cover',
         filter: 'hue-' + rot(details.color_rot),
@@ -29,7 +29,7 @@ function getTurStyle(details, turHeight) {
     return {
         backgroundImage: 'url(' + turretpic + ')',
         backgroundSize: 'cover',
-        height: turHeight + '',
+        height: turHeight,
 
         transform: rot(details.tur_rot),
         transformOrigin: '50% 75%',
@@ -64,8 +64,8 @@ function Tank(props) {
 
     const size = turHeight * 1.5;
 
-    const tankStyle = getTankStyle(props, tankHeight, tankWidth);
-    const turretStyle = getTurStyle(props, turHeight);
+    const tankStyle = getTankStyle(details, tankHeight, tankWidth);
+    const turretStyle = getTurStyle(details, turHeight);
 
     return <div className='tank' style={tankStyle}>
         <img src={turretpic}  style={turretStyle}/>

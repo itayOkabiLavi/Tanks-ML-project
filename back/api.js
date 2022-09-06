@@ -19,6 +19,7 @@ function api(srvapp, port, database_path) {
             console.log(content);
             if (err) {
                 res.status(404).send(err);
+                console.log(err)
             } else {
                 res.status(200).send(data);
             }

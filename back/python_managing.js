@@ -5,13 +5,13 @@ module.exports = {
         const python = spawn('python', [path]);
         // collect data from script
         python.stdout.on('data', function (data) {
-            console.log('Pipe data from python script ...');
+            console.log('running python ' + path);
             dataToSend = data.toString();
             console.log(dataToSend)
         });
         // in close event we are sure that stream from child process is closed
         python.on('close', (code) => {
-            console.log(`child process close all stdio with code ${code}`);
+            console.log(`exited python ` + path + ` with ${code}`);
         });
     }
 }

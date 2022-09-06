@@ -12,7 +12,7 @@ const {spawn} = require('child_process');
 const api = require('./api')
 const python_managing = require('./python_managing');
 
-const database_path = "/algorithms/output"
+const database_path = "./algorithms/output"
 // TODO: static public. return web displayer
 
 // START
