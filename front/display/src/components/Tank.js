@@ -7,37 +7,6 @@ function rot(deg) {
     return 'rotate(' + deg + 'deg)';
 }
 
-function getTankStyle(details, tankHeight, tankWidth) {
-    return {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        position: 'absolute',
-        backgroundImage: 'url(' + tankpic + ')',
-        backgroundSize: 'cover',
-        filter: 'hue-' + rot(details.color_rot),
-        marginLeft: details.xpos - tankWidth / 2.0,
-        marginBottom: details.ypos - tankHeight / 2.0,
-        transform: rot(details.rot),
-
-        height: tankHeight,
-        width: tankWidth
-    };
-}
-
-function getTurStyle(details, turHeight) {
-    return {
-        backgroundImage: 'url(' + turretpic + ')',
-        backgroundSize: 'cover',
-        height: turHeight,
-
-        transform: rot(details.tur_rot),
-        transformOrigin: '50% 75%',
-        position: 'absolute',
-        bottom: '15%',
-
-    }
-}
 /**
  * props = {
  *  id      - tank id.
@@ -53,20 +22,65 @@ function getTurStyle(details, turHeight) {
  * @returns 
  */
 function Tank(props) {
-    const details = props.details;
-    const MAX_BODY = 50, MAX_TUR = 50;
+    const [details, setDetails] = useState(props.details);
+    const id = details._id;
 
-    const tankHeight = details.size * MAX_BODY;
-    const tankWidth = tankHeight / 1.4;
+    const SIZE_FACTOR = 5;
 
-    const turHeight = details.tursize * MAX_TUR;
-    const turWidth = turHeight / 1.6;
+    const [tankStyle, setTankStyle] = useState(getTankStyle(details));
 
-    const size = turHeight * 1.5;
+    function getTankStyle(details) {
+        const tankHeight = details.size * SIZE_FACTOR;
+        const tankWidth = tankHeight / 1.4;
+        return {
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            position: 'absolute',
+            backgroundImage: 'url(' + tankpic + ')',
+            backgroundSize: 'cover',
+            filter: 'hue-' + rot(details.color_rot),
+            marginLeft: details.xpos - tankWidth / 2.0,
+            marginBottom: details.ypos - tankHeight / 2.0,
+            transform: rot(details.rot),
+    
+            height: tankHeight,
+            width: tankWidth
+        };
+    }
+    
+    function change_detail(key, val) {
+        details[key] = val;
+        setDetails(details);
+        setTankStyle(details);
+    }
 
-    const tankStyle = getTankStyle(details, tankHeight, tankWidth);
-    const turretStyle = getTurStyle(details, turHeight);
+    // function set_turn_details(turn_details) {
+    //     console.log(details)
+    //     Object.keys(turn_details).forEach((key) => details[key] = turn_details[key])
+    //     setDetails(details);
+    //     setTankStyle(details);
+    //     console.log(details)
+    // }
 
+    const turretStyle = getTurStyle(details);
+
+    function getTurStyle(details) {
+        const turHeight = details.tursize * SIZE_FACTOR;
+        return {
+            backgroundImage: 'url(' + turretpic + ')',
+            backgroundSize: 'cover',
+            height: turHeight,
+    
+            transform: rot(details.tur_rot),
+            transformOrigin: '50% 75%',
+            position: 'absolute',
+            bottom: '15%',
+    
+        }
+    }
+
+    
     return <div className='tank' style={tankStyle}>
         <img src={turretpic}  style={turretStyle}/>
     </div>;
