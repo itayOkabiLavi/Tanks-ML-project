@@ -29,7 +29,7 @@ class Tank:
     _color_rot: float
     
     _tursize: float
-    _tur_rot: float
+    _tur_angle: float
     _tur_rot_step: float
     
     def __init__(self, details:dict) -> None:
@@ -46,8 +46,9 @@ class Tank:
         
         # turret
         self._tursize = details['tursize']
-        self._tur_rot_step = 1 - (self._tursize / SPD_FACTOR)
-        self._tur_rot = details['tur_rot']
+        trs = (1 - (self._tursize / SPD_FACTOR))
+        self._tur_rot_step = 15 * trs * trs
+        self._tur_angle = details['tur_rot']
         self._color_rot = details['color_rot']
         
         # total details
@@ -71,7 +72,14 @@ class Tank:
             self.set_angle(self._angle + self._step)
         return self.turn_dict()
     
-    def shoot(self):
+    def rotate_turret(self, left:bool=False):
+        if left:
+            self._tur_angle -= self._tur_rot_step
+        else:
+            self._tur_angle += self._tur_rot_step
+        return self.turn_dict()
+    
+    def shoot(self, environment):
         pass
     
     def got_hit(self):
@@ -89,16 +97,8 @@ class Tank:
             float(format(self._xpos, '.3f')),
             float(format(self._ypos, '.3f')),
             float(format(self._angle, '.3f')),
-            float(format(self._tur_rot, '.3f'))
+            float(format(self._tur_angle, '.3f'))
         ]
-     
-        # {
-        #     '_id': self._id,
-        #     'xpos': float(format(self._xpos, '.3f')),
-        #     'ypos': float(format(self._ypos, '.3f')),
-        #     'rot': float(format(self._angle, '.3f')),
-        #     'tur_rot': float(format(self._tur_rot, '.3f'))
-        # }
     
     def get_details(self):
         return self.details
@@ -108,6 +108,10 @@ class Tank:
         
     def __str__(self) -> str:
         return str(self.details).replace("'", '"')
+    
+    def move(self):
+        # make decision here
+        pass
 
 def get_tank_dict(_id, xpos, ypos, size, rot, color_rot, tursize, tur_rot):
         return {

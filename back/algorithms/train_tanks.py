@@ -29,7 +29,7 @@ for i in range(20):
 for i in range(20):
     bg.new_frame()
     for key in tanks:
-        bg.add_turn(tanks[key].backwards())
+        bg.add_turn(tanks[key].rotate_turret())
         
 print("Output file is ready.")
 bg.save(save_to_folder)

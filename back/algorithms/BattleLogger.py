@@ -1,4 +1,5 @@
 from Tank import Tank
+from algorithms.Bullet import Bullet
 
 class BattleLogger:
     _battleId: int

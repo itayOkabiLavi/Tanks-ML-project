@@ -5,7 +5,7 @@ import turretpic from "../images/Turret.png";
 
 const SIZE_FACTOR = 5
 
-function rot(deg) {
+function rotation_format(deg) {
     return 'rotate(' + deg + 'deg)';
 }
 
@@ -27,39 +27,42 @@ class Tank extends React.Component{
     constructor(props) {
         super(props)
         this.details = this.props
-        this.style = this.getTankStyle(this.details)
-        this.turretStyle = this.getTurStyle(this.details)
         this.id = this.details._id
+
+        this.color_rot = this.details.color_rot
+        this.tankHeight = this.details.size * SIZE_FACTOR
+        this.tankWidth = this.tankHeight / 1.2
+        
+        this.turHeight = this.details.tursize * SIZE_FACTOR;
+        
+        this.style = this.getTankStyle(this.details.xpos, this.details.ypos, this.details.rot)
+        this.turretStyle = this.getTurStyle(this.details.tur_rot)
     }
 
-    getTankStyle = (details) => {
-        const tankHeight = details.size * SIZE_FACTOR
-        const tankWidth = tankHeight / 1.2
+    getTankStyle = (xpos, ypos, angle) => {
         return {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
             position: 'absolute',
-            height: tankHeight,
-            width: tankWidth,
+            height: this.tankHeight,
+            width: this.tankWidth,
             backgroundImage: 'url(' + tankpic + ')',
             backgroundSize: 'cover',
-            filter: 'hue-' + rot(details.color_rot),
-            marginLeft: details.xpos - tankWidth / 2.0,
-            marginBottom: details.ypos - tankHeight / 2.0,
-            transform: rot(details.rot),   
+            filter: 'hue-' + rotation_format(this.color_rot),
+            marginLeft: xpos - this.tankWidth / 2.0,
+            marginBottom: ypos - this.tankHeight / 2.0,
+            transform: rotation_format(angle),   
         }
     }
 
-    getTurStyle = (details) => {
-        const turHeight = details.tursize * SIZE_FACTOR;
+    getTurStyle = (angle) => {
         return {
             backgroundImage: 'url(' + turretpic + ')',
             backgroundSize: 'cover',
-            height: turHeight,
+            height: this.turHeight,
             
-    
-            transform: rot(details.tur_rot),
+            transform: rotation_format(angle),
             transformOrigin: '50% 75%',
             position: 'absolute',
             bottom: '15%',
@@ -69,7 +72,8 @@ class Tank extends React.Component{
     set_turn_details = (turn_details) => {
         Object.keys(turn_details).forEach((key) => this.details[key] = turn_details[key])
         // console.log(this.state.details)
-        this.style = this.getTankStyle(this.details)
+        this.style = this.getTankStyle(this.details.xpos, this.details.ypos, this.details.rot)
+        this.turretStyle = this.getTurStyle(this.details.tur_rot)
     }
 
     render() 

@@ -10,7 +10,7 @@ import './BattleZone.css';
 const base_url = "http://localhost:3030";
 
 function BattleZone() {
-    const FPS_SEC = 40, FFPS_SEC = FPS_SEC / 2;
+    const FPS_SEC = 100, FFPS_SEC = FPS_SEC / 2;
     let childRef = useRef(null);
     childRef.current = {}
     const [tanks, setTanks] = useState([]);
@@ -63,7 +63,7 @@ function BattleZone() {
                         rot: turn_list[3].trim(),
                         tur_rot: turn_list[4].trim()
                     }
-                    console.log(turn)
+                    // console.log(turn)
                     frame[turn._id] = turn;
                 }
             });
