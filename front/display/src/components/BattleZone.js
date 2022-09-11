@@ -10,13 +10,13 @@ import './BattleZone.css';
 const base_url = "http://localhost:3030";
 
 function BattleZone() {
-    const FPS_SEC = 800, FFPS_SEC = FPS_SEC / 2;
+    const FPS_SEC = 40, FFPS_SEC = FPS_SEC / 2;
     let childRef = useRef(null);
     childRef.current = {}
     const [tanks, setTanks] = useState([]);
     const [frames, setFrames] = useState([]);
     const [gameStatus, setGameStatus] = useState("No Game Loaded");
-    
+    const [sprites, setSprites] = useState([])
     function req_game (e) {
         e.preventDefault();
     
@@ -35,25 +35,35 @@ function BattleZone() {
     function parseTextFile(game_text) {
         const info_split = game_text.split('\n');
         let i = 1;
-        const _tanks = [];
+        let tempTanks = []
+        let tempTankSprites = []
         while (info_split[i].trim() !== 'g') {
-            let tank_det = info_split[i].trim();
-            tank_det = JSON.parse(tank_det);
-            _tanks.push(
-                <Tank details={tank_det} key={i}/>
-            );
-            i += 1;
+            let tank_det = info_split[i].trim()
+            tank_det = JSON.parse(tank_det)
+            let tank = new Tank(tank_det)
+            tempTanks.push(tank)
+            tempTankSprites.push(tank.render())
+            i += 1
         }
-        setTanks(_tanks);
+        setTanks(tempTanks);
+        setSprites(tempTankSprites)
         
         i += 1
         let _frames = []
         while (typeof info_split[i] === 'string') {
             let frame = {};
             info_split[i].trim().split(';').forEach(turn => {
-                turn = turn.trim();
+                turn = turn.trim().slice(1,-1); // remove spaces before & after string + chars '[',']'
                 if (turn !== "") {
-                    turn = JSON.parse(turn);
+                    let turn_list = turn.split(',');
+                    turn = {
+                        _id: turn_list[0].trim(),
+                        xpos: turn_list[1].trim(),
+                        ypos: turn_list[2].trim(),
+                        rot: turn_list[3].trim(),
+                        tur_rot: turn_list[4].trim()
+                    }
+                    console.log(turn)
                     frame[turn._id] = turn;
                 }
             });
@@ -67,41 +77,27 @@ function BattleZone() {
 
     function start_game (e) {
         e.preventDefault();
-        let _frames = frames;
-        
+
         let interval = setInterval(() => {
-            if (_frames.length == 0) {
-                clearInterval(interval);
-                return;
+            if (frames.length <= 0) {
+                clearInterval(interval)
+                return
             }
-            // console.log(_frames[_frames.length - 1])
-            let _tanks = tanks;
-            let frame = _frames.pop();
-            // console.log(frame)
-            for (let index = 0; index < _tanks.length; index++) {
-                let tank = _tanks[index];
-                let tid = get_tank_val("_id", tank);
-                if (tid in frame) {
-                    let details = tank.props.details;
-                    let key = tank.key;
-                    let new_details = frame[tid];
-                    //console.log(new_details);
-                    Object.keys(new_details).forEach((key) => details[key] = new_details[key]);
-                    _tanks[index] = <Tank details={new_details} key={key}/>
-                    // console.log(_tanks[index]);
+            let frame = frames.shift()
+            let tempTanks = []
+            tanks.forEach(tank => {
+                if (tank.id in frame) {
+                    tank.set_turn_details(frame[tank.id])
                 }
-            }
-            console.log(_frames.length)
-            console.log(_tanks)
-            console.log(tanks)
-            setTanks(_tanks)
-            console.log(tanks)
+                tempTanks.push(tank.render())
+            });
+            // console.log(tempTanks);
+            setSprites(tempTanks)
         }, FPS_SEC);
     }
 
     function stop_game (e) {
         e.preventDefault();
-        
     }
 
     return <div id='grid'>
@@ -114,7 +110,7 @@ function BattleZone() {
         <div id='zonedisplay'>
             <div id='map-header'></div>
             <div id='map'>
-                {tanks}
+                {sprites}
             </div>
             <div id='map-footer'></div>
         </div>

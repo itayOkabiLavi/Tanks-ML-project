@@ -7,13 +7,29 @@ import os
 save_to_folder = os.path.join(os.getcwd(), "algorithms", "output")
 bg = BattleLogger(1)
 
-tanks = {}
-for i in range(12):
-    tanks[i] = Tank(get_tank_dict(i, (i+1)*50, 50, (i * 4 / 11) + 5, 0, 10 * i, 0, 0))
-    bg.add_tank(tanks[i].get_details())
+tanks = {
+    0: Tank(get_tank_dict(0, 50, 50, 5, 0, 0, 5, 0)),
+    1: Tank(get_tank_dict(1, 150, 50, 7, 45, 90, 7, 0)),
+    2: Tank(get_tank_dict(2, 250, 50, 9, 90, 180, 9, 0)),
+    }
+
+for key in tanks:
+    bg.add_tank(tanks[key])
 
 for i in range(20):
     bg.new_frame()
-    bg.add_turn(tanks[1].forwards())
+    for key in tanks:
+        bg.add_turn(tanks[key].forwards())
+
+for i in range(20):
+    bg.new_frame()
+    for key in tanks:
+        bg.add_turn(tanks[key].rotate())
+        
+for i in range(20):
+    bg.new_frame()
+    for key in tanks:
+        bg.add_turn(tanks[key].backwards())
+        
 print("Output file is ready.")
 bg.save(save_to_folder)
