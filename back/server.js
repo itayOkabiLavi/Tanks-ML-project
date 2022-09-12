@@ -17,4 +17,4 @@ const database_path = "./algorithms/output"
 
 // START
 api(srvapp, port, database_path);
-python_managing.activate(spawn, './algorithms/train_tanks.py');
+python_managing.activate(spawn, './algorithms/game.py');

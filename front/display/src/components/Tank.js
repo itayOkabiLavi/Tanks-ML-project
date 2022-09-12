@@ -69,7 +69,7 @@ class Tank extends React.Component{
         }
     }
 
-    set_turn_details = (turn_details) => {
+    setTurnDetails = (turn_details) => {
         Object.keys(turn_details).forEach((key) => this.details[key] = turn_details[key])
         // console.log(this.state.details)
         this.style = this.getTankStyle(this.details.xpos, this.details.ypos, this.details.rot)
@@ -78,7 +78,7 @@ class Tank extends React.Component{
 
     render() 
     { return <div className='tank' style={this.style} key={this.id}>
-            <img src={turretpic}  style={this.turretStyle}/>
+            <img src={turretpic} style={this.turretStyle}/>
         </div>;
     }
 }

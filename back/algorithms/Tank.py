@@ -1,11 +1,14 @@
 import math
+from Bullet import Bullet
 
 MAX_SIZE = 13
 MIN_SIZE = 2
 SPD_FACTOR = 14
 
+MAX_HP = 100
+
 UPPER_TUR_SIZE = 100
-LOWER_TUR_SIZE = 0
+LOWER_TUR_SIZE = 1
 
 MAX_Y = 200
 MAX_X = 400
@@ -38,12 +41,14 @@ class Tank:
         self._xpos = details['xpos']
         self._ypos = details['ypos']
         self._size = details['size']
+        
         if self._size < MIN_SIZE or self._size > MAX_SIZE:
             raise ValueError("Tank size must be in range [{},{}]. ({})"
                              .format(MIN_SIZE, MAX_SIZE, str(self._id)))
+        
         self._step = 7 * (1 - (self._size / SPD_FACTOR))
         self.set_angle(details['rot'])
-        
+                
         # turret
         self._tursize = details['tursize']
         trs = (1 - (self._tursize / SPD_FACTOR))
@@ -58,29 +63,37 @@ class Tank:
         # TODO: if < MIN or > MAX kill (or damage severly enough) tank
         self._xpos += self._xstep
         self._ypos += self._ystep
-        return self.turn_dict()
+        return self.turn_log()
     
     def backwards(self):
         self._xpos -= self._xstep
         self._ypos -= self._ystep
-        return self.turn_dict()
+        return self.turn_log()
     
     def rotate(self, left:bool=False):
         if left:
             self.set_angle(self._angle - self._step)
         else:
             self.set_angle(self._angle + self._step)
-        return self.turn_dict()
+        return self.turn_log()
     
     def rotate_turret(self, left:bool=False):
         if left:
             self._tur_angle -= self._tur_rot_step
         else:
             self._tur_angle += self._tur_rot_step
-        return self.turn_dict()
+        return self.turn_log()
     
-    def shoot(self, environment):
-        pass
+    def shoot(self, add_to_env, bullet_id):
+        bullet = Bullet(
+            bullet_id,
+            self._xpos,
+            self._ypos,
+            self._angle + self._tur_angle,
+            self._tursize
+            )
+        add_to_env(bullet)
+        return bullet.creation_log()
     
     def got_hit(self):
         pass
@@ -91,7 +104,7 @@ class Tank:
         self._xstep = self._step * math.sin(math.radians(angle))
         # print(self._angle, self._step, self._xstep, self._ystep)
     
-    def turn_dict(self):
+    def turn_log(self):
         return [
             self._id,
             float(format(self._xpos, '.3f')),
@@ -109,9 +122,9 @@ class Tank:
     def __str__(self) -> str:
         return str(self.details).replace("'", '"')
     
-    def move(self):
+    def move(self)->str:
         # make decision here
-        pass
+        return ""
 
 def get_tank_dict(_id, xpos, ypos, size, rot, color_rot, tursize, tur_rot):
         return {

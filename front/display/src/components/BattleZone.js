@@ -5,6 +5,7 @@ import { useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 import Tank from './Tank';
+import Parser from './Parser'
 import './BattleZone.css';
 
 const base_url = "http://localhost:3030";
@@ -13,7 +14,8 @@ function BattleZone() {
     const FPS_SEC = 100, FFPS_SEC = FPS_SEC / 2;
     let childRef = useRef(null);
     childRef.current = {}
-    const [tanks, setTanks] = useState([]);
+    const parser = new Parser
+    const [objects, setObjects] = useState({});
     const [frames, setFrames] = useState([]);
     const [gameStatus, setGameStatus] = useState("No Game Loaded");
     const [sprites, setSprites] = useState([])
@@ -30,49 +32,16 @@ function BattleZone() {
                 setGameStatus("Game Loading Error");
             }
         });
+
     }
 
     function parseTextFile(game_text) {
-        const info_split = game_text.split('\n');
-        let i = 1;
-        let tempTanks = []
-        let tempTankSprites = []
-        while (info_split[i].trim() !== 'g') {
-            let tank_det = info_split[i].trim()
-            tank_det = JSON.parse(tank_det)
-            let tank = new Tank(tank_det)
-            tempTanks.push(tank)
-            tempTankSprites.push(tank.render())
-            i += 1
-        }
-        setTanks(tempTanks);
-        setSprites(tempTankSprites)
-        
-        i += 1
-        let _frames = []
-        while (typeof info_split[i] === 'string') {
-            let frame = {};
-            info_split[i].trim().split(';').forEach(turn => {
-                turn = turn.trim().slice(1,-1); // remove spaces before & after string + chars '[',']'
-                if (turn !== "") {
-                    let turn_list = turn.split(',');
-                    turn = {
-                        _id: turn_list[0].trim(),
-                        xpos: turn_list[1].trim(),
-                        ypos: turn_list[2].trim(),
-                        rot: turn_list[3].trim(),
-                        tur_rot: turn_list[4].trim()
-                    }
-                    // console.log(turn)
-                    frame[turn._id] = turn;
-                }
-            });
-            _frames.push(frame);
-            i += 1;
-        }
-        setFrames(_frames);
+        const [_gameID, _objects, _sprites, _frames] = parser.parseGameFile()
+        setObjects(_objects)
+        setSprites(_sprites)
+        setFrames(_frames)
 
-        setGameStatus("Game ID: " + info_split[0]);
+        setGameStatus("Game ID: " + _gameID);
     }
 
     function start_game (e) {
@@ -85,9 +54,9 @@ function BattleZone() {
             }
             let frame = frames.shift()
             let tempTanks = []
-            tanks.forEach(tank => {
+            .forEach(tank => {
                 if (tank.id in frame) {
-                    tank.set_turn_details(frame[tank.id])
+                    tank.setTurnDetails(frame[tank.id])
                 }
                 tempTanks.push(tank.render())
             });
