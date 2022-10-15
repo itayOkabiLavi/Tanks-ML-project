@@ -5,6 +5,7 @@ from utils.Game import Point
 
 SIZE = 10
 COLOR = (200, 200, 0)
+PRICE = 10
 
 class Item:
     def __init__(self, position: Point) -> None:
@@ -16,3 +17,6 @@ class Item:
         
     def render(self, display):
         pygame.draw.rect(display, COLOR, self.rect)
+        
+    def price(self):
+        return PRICE

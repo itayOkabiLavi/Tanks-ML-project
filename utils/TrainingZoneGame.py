@@ -10,22 +10,30 @@ from utils.Collectable import SIZE as item_size
 
 
 SPRITE_SIZE = 20
-TANK_H = 30
-TANK_W = TANK_H // 2
-
-keydown_conv = {
-    pygame.K_DOWN: Direction.DOWN.value,
-    pygame.K_UP: Direction.UP.value,
-    pygame.K_LEFT: Direction.LEFT.value,
-    pygame.K_RIGHT: Direction.RIGHT.value
-}
+TANK_H = 60
 
 class TrainingZoneGame(Game):
-    def __init__(self, width, height) -> None:
-        super().__init__(width, height)
+    def __init__(self, background_image_path, height, width) -> None:
+        self.height = height
+        self.width = width
+        super().__init__(self.width, self.height)
         
-        self.tank = Tank(TANK_H, TANK_W, Point(width // 2, height // 2), DARK_GREEN)
+        self.background = pygame.image.load(background_image_path)
+        pygame.transform.scale(self.background, (self.width, self.height))
+        
+        print("setting tank.")
+        self.tank = Tank("t1", DARK_GREEN, TANK_H, Point(width // 2, height // 2),
+                         0, TANK_H)
         self._place_item()
+        
+        self.keydown_conv = {
+            pygame.K_DOWN: (lambda : self.tank.move(1, False)),
+            pygame.K_UP: (lambda : self.tank.move(1)),
+            pygame.K_LEFT: (lambda : self.tank.rotate(1, False)),
+            pygame.K_RIGHT: (lambda : self.tank.rotate(1)),
+            pygame.K_a: (lambda : self.tank.rotate_turret(1, False)),
+            pygame.K_d: (lambda : self.tank.rotate_turret(1))
+        }
         
     def _place_item(self):
         x = random.randint(0 + item_size, self.width - item_size)
@@ -33,12 +41,16 @@ class TrainingZoneGame(Game):
         self.item = Item(Point(x, y))
         
     def _render(self):
-        self.display.fill(DARK_GRAY)
+        self.display.blit(self.background, (0, 0))
         
         self.tank.render(self.display)
         self.item.render(self.display)
         
         pygame.display.flip()
+    
+    def _action(self, event):
+        if event.key in self.keydown_conv:
+            self.keydown_conv[event.key]()   
     
     def play_round(self):
         finish = False
@@ -48,8 +60,7 @@ class TrainingZoneGame(Game):
                 pygame.quit()
                 quit()
             if event.type == pygame.KEYDOWN:
-                if event.key in keydown_conv:
-                    self.tank.move(keydown_conv[event.key])
+                self._action(event)
         
         # game over?
         if self._fail():
@@ -57,7 +68,7 @@ class TrainingZoneGame(Game):
             return finish, self.tank.score
         
         if self.tank.rect.colliderect(self.item.rect):
-            self.tank.score += 10
+            self.tank.score += self.item.price()
             self._place_item()
         
         # game not over, render.
