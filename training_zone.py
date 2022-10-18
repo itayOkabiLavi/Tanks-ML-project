@@ -1,8 +1,7 @@
 from utils.TrainingZoneGame import TrainingZoneGame
 
 if __name__ == "__main__":
-    game = TrainingZoneGame("C:/Users/hagsh/OneDrive/Desktop/Self Studies/ML/ml project/images/bg-sand.jpg",
-                            500, 700)
+    game = TrainingZoneGame("C:/Users/hagsh/OneDrive/Desktop/Self Studies/ML/ml project/images/bg-sand.jpg")
     
     while True:
         finish, score = game.play_round()
@@ -11,4 +10,5 @@ if __name__ == "__main__":
             break
     
     print("Score:", score)
+    input("Press any key to quit")
     game.end_pygame()

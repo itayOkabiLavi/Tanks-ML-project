@@ -25,8 +25,13 @@ class Game:
         
     def end_pygame(self):
         pygame.quit()
+        quit()
     
         
     def play_round(self):
+        pass
+    
+    
+    def render_display(self):
         pass
     
