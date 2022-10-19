@@ -13,6 +13,7 @@ SPRITE_SIZE = 20
 TANK_H = 60
 HEIGHT = 500
 ZONE_WIDTH = 700
+ZONE_IMAGE = "C:/Users/hagsh/OneDrive/Desktop/Self Studies/ML/ml project/images/bg-sand.jpg"
 
 STAT_SCREEN_WIDTH = 200
 
@@ -22,8 +23,8 @@ TITLE_LEFT_MARGIN = 10 + ZONE_WIDTH
 TEXT_LEFT_MARGIN = 150 + ZONE_WIDTH
 
 
-class TrainingZoneGame(Game):
-    def __init__(self, background_image_path) -> None:
+class TrainingZoneGameByHand(Game):
+    def __init__(self, background_image_path=ZONE_IMAGE) -> None:
         self.height = HEIGHT
         self.width = ZONE_WIDTH + STAT_SCREEN_WIDTH
         super().__init__(self.width, self.height)
@@ -52,7 +53,7 @@ class TrainingZoneGame(Game):
         
         self.bullets = []
         
-        self.keydown_conv = {
+        self.actions_conv = {
             pygame.K_DOWN: (lambda : self.tank.move(1, False)),
             pygame.K_UP: (lambda : self.tank.move(1)),
             pygame.K_LEFT: (lambda : self.tank.rotate(1, False)),
@@ -122,11 +123,11 @@ class TrainingZoneGame(Game):
     
     
     def _action(self, event):
-        if event.key in self.keydown_conv:
-            self.keydown_conv[event.key]()   
+        if event.key in self.actions_conv:
+            self.actions_conv[event.key]()   
     
     
-    def _render_display(self):
+    def _render_display(self) -> int:
         self.display.blit(self.zone, (0, 0))
         pygame.draw.rect(self.display, (10, 0, 0), self.stat_screen)
         
@@ -146,16 +147,10 @@ class TrainingZoneGame(Game):
         line_pointer = _draw_line(b"Bombs Activated:", str(self.bombs_activated), line_pointer)
         line_pointer = _draw_line(b"Total Score:", str(self.tank.score), line_pointer)
         
-    
-    
-    def play_round(self):
-        # move tank
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.end_pygame()
-            if event.type == pygame.KEYDOWN:
-                self._action(event)
+        return line_pointer
         
+    
+    def _bullets_collisions(self):
         temp_bullets = self.bullets.copy()
         for bullet in temp_bullets:
             bullet.move()
@@ -167,7 +162,17 @@ class TrainingZoneGame(Game):
                     bullet.parent.score += bomb.get_value()
                     self.bombs_destroyed += 1
                     break
+    
+    
+    def play_round(self):
+        # move tank
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.end_pygame()
+            if event.type == pygame.KEYDOWN:
+                self._action(event)
         
+        self._bullets_collisions()
         # game not over, render.
         self._render()
         

@@ -35,7 +35,7 @@ class Tank:
         self.turret.rotate_along(angle)
         
         self.range = shoot_range
-        
+
         
     def set_game_properties(self, color):
         self.max_pixels_pt = 1000 / self.height
@@ -93,7 +93,7 @@ class Tank:
             if to_right:
                 d = -1 * d
             self.angle += d
-            
+            self.angle = self.angle % 360
             self.rad_angle = np.deg2rad(self.angle)
             self.body = pygame.transform.rotate(self.image, self.angle)
             
@@ -106,11 +106,13 @@ class Tank:
     def rotate_turret(self, power, to_right=True):
         self.turret.rotate(power, to_right)
     
+    
     def shoot(self):
         # print("shooting")
         self.game.bullets.append(
             Bullet(self, self.color, self.turret.height // 10, self.turret.angle, self.center, self.game)
         )
+    
     
     def get_center(self):
         return self.center
@@ -161,6 +163,7 @@ class Turret():
             if to_right:
                 d = -1 * d
             self.angle += d
+            self.angle = self.angle % 360
             self.rad_angle = np.deg2rad(self.angle)
             self.body = pygame.transform.rotate(self.image, self.angle)
             
