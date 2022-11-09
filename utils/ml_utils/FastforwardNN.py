@@ -4,6 +4,15 @@ import torch.nn as nn
 import torch.optim as opt
 import torch.nn.functional as funcs
 
+def get_ffnnn_dict(learning_rate, input_size, layer1_size, layer2_size, output_size):
+    return {
+        'learning_rate': learning_rate,
+        'input_size': input_size, 
+        'layer1_size': layer1_size, 
+        'layer2_size': layer2_size, 
+        'output_size': output_size
+    }
+
 class FastforwardNN(nn.Module):
     def __init__(self, learning_rate, input_size, layer1_size, layer2_size, output_size) -> None:
         super(FastforwardNN, self).__init__()
@@ -37,35 +46,3 @@ class FastforwardNN(nn.Module):
         #     self.mem.add((str(inp), str(output)))
         return output
         
-        
-ACT_MOVE = 0
-ACT_ROT = 1
-ACT_TUR_ROT = 2
-ACT_SHT = 3
-ACT_POWER = 4
-
-D_ACTION = "action-type"
-D_POWER = "power"
-D_POSITIVE = "pos/neg"
-        
-        
-class Agent:
-    def __init__(self, learning_rate, input_size, layer1_size, layer2_size, output_size) -> None:
-        self.NN = FastforwardNN(learning_rate, input_size, layer1_size, layer2_size, output_size)
-    
-    def get_action(self, state: list):
-        action = self.NN.forward(torch.FloatTensor(state))
-        # print(action)
-        return action
-    
-    def max_act_of_action(self, action: torch.Tensor):
-        # ["move", "rotate", "rotate-turret", "shoot", "power-level"]
-        max_action = int(action[0:4].argmax().min())
-        power = float(action[4])
-        pos_neg = float(action[5]) > 0.5
-        print(action, max_action, power)
-        return {
-            D_ACTION: max_action,
-            D_POWER: power,
-            D_POSITIVE: pos_neg
-        }
