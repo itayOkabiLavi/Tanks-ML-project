@@ -3,7 +3,7 @@ import utils.TrainingZoneGameByHand as TZBH
 
 from utils.ml_utils.Agent import D_ACTION, D_POSITIVE, D_POWER, Agent, ACT_MOVE, ACT_POWER, ACT_ROT, ACT_SHT, ACT_TUR_ROT
 from utils.ml_utils.FastforwardNN import get_ffnnn_dict
-from utils.ml_utils.Qtable import get_qtable_props
+
 
 LAYER1_SIZE = 10
 LAYER2_SIZE = 10
@@ -18,18 +18,17 @@ class TrainingZoneGameAuto(TZBH.TrainingZoneGameByHand):
         self.action_props = ["move", "rotate", "rotate-turret", "shoot", "power-level", "pos/neg"]
         self.action_props_size = len(self.action_props)
         
-        ffnn_props = get_ffnnn_dict(LR, self.state_size, LAYER1_SIZE, LAYER2_SIZE, self.action_props_size)
-        qtable_props = get_qtable_props()
+        ffnn_props = get_ffnnn_dict(LR, LAYER1_SIZE, LAYER2_SIZE)
         self.agent = Agent(ffnn_props)
         
         self.actions_conv = { }
             
     def _get_state(self):
-        for coin in self.coins:
-            state.extend([coin.topleft.x, coin.topleft.y])
-        for bomb in self.bombs:
-            state.extend([bomb.topleft.x, bomb.topleft.y])
-        return state
+        return \
+            self.tank, \
+            [[coin.topleft.x, coin.topleft.y] for coin in self.coins], \
+            [[bomb.topleft.x, bomb.topleft.y] for bomb in self.bombs]
+        
     
     def _action(self, action):
         print(" --- action --- ")
@@ -50,16 +49,14 @@ class TrainingZoneGameAuto(TZBH.TrainingZoneGameByHand):
             
         elif action[D_ACTION] == ACT_SHT:
             self.tank.shoot()
-            print(ACT_SHT)
-            
+            print(ACT_SHT)    
         else:
             raise Exception(ValueError("Illegal action {}".format(action)))
         
     
     def play_round(self):
         state = self._get_state()
-        action = self.agent.get_action(state)
-        # action = self.agent.max_act_of_action(action)
+        action = self.agent.get_action(*state)
         self._action(action)
         
         self._bullets_collisions()

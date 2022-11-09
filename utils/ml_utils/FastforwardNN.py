@@ -4,13 +4,11 @@ import torch.nn as nn
 import torch.optim as opt
 import torch.nn.functional as funcs
 
-def get_ffnnn_dict(learning_rate, input_size, layer1_size, layer2_size, output_size):
+def get_ffnnn_dict(learning_rate, layer1_size, layer2_size):
     return {
         'learning_rate': learning_rate,
-        'input_size': input_size, 
         'layer1_size': layer1_size, 
-        'layer2_size': layer2_size, 
-        'output_size': output_size
+        'layer2_size': layer2_size
     }
 
 class FastforwardNN(nn.Module):

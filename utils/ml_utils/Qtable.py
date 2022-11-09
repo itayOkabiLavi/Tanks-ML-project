@@ -1,15 +1,5 @@
 import pandas as pd
 
-def get_qtable_props(mem_length, 
-                        states: list, actions: list, 
-                        memory = pd.DataFrame()):
-    return {
-        'mem_length': mem_length,
-        'states': states,
-        'actions': actions,
-        'memory': memory
-    }
-
 class QTable:
     def __init__(self, mem_length, 
                  states: list, actions: list, 
@@ -38,6 +28,11 @@ class QTable:
     def get_memory_line(self, state):
         return self.memory.loc[state]
     
-    def get_closest_memory_line(self,):
+    def get_closest_memory_line(self):
         pass
         
+    def get_action(self, state):
+        if state not in self.memory.index:
+            return None
+        max_action = self.memory.loc[state].idxmax()
+        return max_action
